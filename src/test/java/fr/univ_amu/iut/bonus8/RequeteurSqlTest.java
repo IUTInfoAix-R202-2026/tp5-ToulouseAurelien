@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -27,7 +26,6 @@ class RequeteurSqlTest {
     requeteur = new RequeteurSql(source);
   }
 
-  @Disabled("Retire cette annotation pour activer le test")
   @Test
   void lister_mappe_chaque_ligne_avec_le_row_mapper_fourni() {
     List<String> codes =
@@ -36,7 +34,6 @@ class RequeteurSqlTest {
     assertThat(codes).containsExactly("Nyclei", "Pippip", "Rhihip", "Tadten");
   }
 
-  @Disabled("Retire cette annotation pour activer le test")
   @Test
   void le_meme_requeteur_sert_pour_une_autre_requete_et_un_autre_type() {
     List<Integer> nbSites = requeteur.query("SELECT COUNT(*) AS n FROM site", rs -> rs.getInt("n"));

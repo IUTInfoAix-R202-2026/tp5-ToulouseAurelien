@@ -13,21 +13,17 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test de l'exercice 6 : on vérifie d'abord qu'un import valide est bien
- * persisté, puis qu'un
- * import contenant une observation invalide (taxon inexistant) est
- * <b>entièrement annulé</b>
+ * Test de l'exercice 6 : on vérifie d'abord qu'un import valide est bien persisté, puis qu'un
+ * import contenant une observation invalide (taxon inexistant) est <b>entièrement annulé</b>
  * (rollback).
  */
 class ImportPassageServiceTest {
 
-  @TempDir
-  Path dossier;
+  @TempDir Path dossier;
   private DataSource source;
   private ImportPassageService service;
 
@@ -42,14 +38,15 @@ class ImportPassageServiceTest {
   void un_import_valide_persiste_le_passage() {
     int avant = service.nombrePassages();
 
-    long id = service.importer(
-        "640380",
-        "Z1",
-        3,
-        2026,
-        List.of(
-            new ObservationAImporter(0.5, 1.0, 40000, "Pippip", 0.9),
-            new ObservationAImporter(3.0, 3.6, 25000, "Tadten", 0.6)));
+    long id =
+        service.importer(
+            "640380",
+            "Z1",
+            3,
+            2026,
+            List.of(
+                new ObservationAImporter(0.5, 1.0, 40000, "Pippip", 0.9),
+                new ObservationAImporter(3.0, 3.6, 25000, "Tadten", 0.6)));
 
     assertThat(id).isPositive();
     assertThat(service.nombrePassages()).isEqualTo(avant + 1);
@@ -57,17 +54,19 @@ class ImportPassageServiceTest {
 
   @Test
   void un_import_valide_persiste_les_observations() throws SQLException {
-    long id = service.importer(
-        "640380",
-        "Z1",
-        5,
-        2026,
-        List.of(
-            new ObservationAImporter(0.5, 1.0, 40000, "Pippip", 0.9),
-            new ObservationAImporter(3.0, 3.6, 25000, "Tadten", 0.6)));
+    long id =
+        service.importer(
+            "640380",
+            "Z1",
+            5,
+            2026,
+            List.of(
+                new ObservationAImporter(0.5, 1.0, 40000, "Pippip", 0.9),
+                new ObservationAImporter(3.0, 3.6, 25000, "Tadten", 0.6)));
 
     try (Connection connexion = source.getConnection();
-        PreparedStatement ps = connexion.prepareStatement("SELECT COUNT(*) FROM observation WHERE passage_id = ?")) {
+        PreparedStatement ps =
+            connexion.prepareStatement("SELECT COUNT(*) FROM observation WHERE passage_id = ?")) {
       ps.setLong(1, id);
       try (ResultSet rs = ps.executeQuery()) {
         rs.next();
@@ -83,14 +82,15 @@ class ImportPassageServiceTest {
     int avant = service.nombrePassages();
 
     assertThatThrownBy(
-        () -> service.importer(
-            "640380",
-            "Z1",
-            4,
-            2026,
-            List.of(
-                new ObservationAImporter(0.5, 1.0, 40000, "Pippip", 0.9),
-                new ObservationAImporter(2.0, 2.5, 30000, "XXXXXX", 0.5))))
+            () ->
+                service.importer(
+                    "640380",
+                    "Z1",
+                    4,
+                    2026,
+                    List.of(
+                        new ObservationAImporter(0.5, 1.0, 40000, "Pippip", 0.9),
+                        new ObservationAImporter(2.0, 2.5, 30000, "XXXXXX", 0.5))))
         .isInstanceOf(DataAccessException.class);
 
     assertThat(service.nombrePassages())

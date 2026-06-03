@@ -1,5 +1,10 @@
 package fr.univ_amu.iut.bonus8;
 
+import fr.univ_amu.iut.jdbc.DataAccessException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
@@ -25,11 +30,15 @@ public class RequeteurSql {
   public <T> List<T> query(String sql, RowMapper<T> mapper) {
     List<T> resultats = new ArrayList<>();
 
-    // TODO bonus 8 : exécuter la requête et remplir `resultats` en appelant le mapper.
-    //
-    // - ouvrir une connexion, préparer et exécuter `sql` ;
-    // - pour chaque ligne, resultats.add(mapper.mapper(rs)) ;
-    // - envelopper toute SQLException dans une DataAccessException.
+    try (Connection connexion = source.getConnection();
+        PreparedStatement ps = connexion.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        resultats.add(mapper.mapper(rs));
+      }
+    } catch (SQLException e) {
+      throw new DataAccessException("Impossible d'exécuter la requête SQL", e);
+    }
 
     return resultats;
   }
