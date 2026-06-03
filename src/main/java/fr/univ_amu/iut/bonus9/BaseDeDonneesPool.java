@@ -1,5 +1,6 @@
 package fr.univ_amu.iut.bonus9;
 
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 
@@ -24,17 +25,10 @@ public class BaseDeDonneesPool {
 
   /** Construit une {@link DataSource} poolée (HikariCP) sur le fichier SQLite donné. */
   public static DataSource poolSurFichier(String chemin) {
-    DataSource source = null;
-
-    // TODO bonus 9 : configurer un pool HikariCP et l'affecter à `source`.
-    //
-    // 1. HikariConfig config = new HikariConfig();
-    //    config.setJdbcUrl("jdbc:sqlite:" + chemin);
-    //    config.setMaximumPoolSize(5);
-    //    config.setConnectionInitSql("PRAGMA foreign_keys = ON"); // FK sur chaque connexion du
-    // pool
-    // 2. source = new HikariDataSource(config);
-
-    return source;
+    HikariConfig config = new HikariConfig();
+    config.setJdbcUrl("jdbc:sqlite:" + chemin);
+    config.setMaximumPoolSize(5);
+    config.setConnectionInitSql("PRAGMA foreign_keys = ON");
+    return new HikariDataSource(config);
   }
 }

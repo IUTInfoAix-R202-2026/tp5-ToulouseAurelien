@@ -8,7 +8,6 @@ import fr.univ_amu.iut.exercice4.Site;
 import fr.univ_amu.iut.exercice4.SiteDao;
 import java.nio.file.Path;
 import javax.sql.DataSource;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -20,7 +19,6 @@ class BaseDeDonneesPoolTest {
 
   @TempDir Path dossier;
 
-  @Disabled("Retire cette annotation pour activer le test")
   @Test
   void le_dao_de_l_exercice_4_fonctionne_inchange_avec_le_pool() {
     DataSource pool = BaseDeDonneesPool.poolSurFichier(dossier.resolve("test.db").toString());
@@ -34,7 +32,6 @@ class BaseDeDonneesPoolTest {
     }
   }
 
-  @Disabled("Retire cette annotation pour activer le test")
   @Test
   void le_pool_est_bien_une_datasource_hikaricp() {
     DataSource pool = BaseDeDonneesPool.poolSurFichier(dossier.resolve("test2.db").toString());
